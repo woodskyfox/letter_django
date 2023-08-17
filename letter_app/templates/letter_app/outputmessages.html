@@ -1,0 +1,25 @@
+{% extends "letter_app/base.html" %}
+{% load django_bootstrap5 %}
+
+{% block page_header %}
+   <h3>output messages ({{output_number}})</h3>
+{% endblock page_header %}
+
+{% block content %}
+  <p>
+    <a href="{% url 'letter_app:write_message' %}">Write message</a>
+  </p>
+{% for output_message in output_messages %}
+<div class="card mb-3 text-bg-light">
+   <div class="card-header">
+      {{output_message.id}} owner: {{output_message.owner}}
+	  {{ output_message.date_added|date:'M d, Y H:i' }}
+   </div>
+   <div class="card-body">
+      {{ output_message.text|linebreaks }}
+  </div>
+</div>
+{% empty %}
+<li>There are no messages yet. (Сообщений пока нет.)</li>
+{% endfor %}
+{% endblock content %}

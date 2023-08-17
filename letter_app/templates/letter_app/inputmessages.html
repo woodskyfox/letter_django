@@ -1,0 +1,24 @@
+{% extends "letter_app/base.html" %}
+
+{% block page_header %}
+  <h3>input messages ({{input_number}})</h3>
+{% endblock page_header %}
+
+{% block content %}
+  <p>
+    <a href="{% url 'letter_app:input_messages' %}">Обновить</a>
+  </p>
+{% for input_message in input_message %}
+<div class="card mb-3 text-bg-light">
+   <div class="card-header">
+      {{input_message.id}} owner: {{input_message.owner}}
+	  {{ input_message.date_added|date:'M d, Y H:i' }}
+   </div>
+   <div class="card-body">
+      {{ input_message.text|linebreaks }}
+  </div>
+</div>
+{% empty %}
+<li>There are no messages yet. (Сообщений пока нет.)</li>
+{% endfor %}
+{% endblock content %}

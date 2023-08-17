@@ -1,0 +1,21 @@
+{% extends 'letter_app/base.html' %}
+
+{% block page_header %}
+  <h3>messages ({{messages_number}})</h3>
+{% endblock page_header %}
+
+{% block content %}
+{% for message in messages %}
+<div class="card text-bg-light mb-3">
+   <div class="card-header">
+      {{message.id}} owner: {{message.owner}} - request_user: {{request_user}}
+	  {{ message.date_added|date:'M d, Y H:i' }}
+   </div>
+   <div class="card-body">
+      {{ message.text|linebreaks }}
+  </div>
+</div>
+{% empty %}
+<li>There are no messages yet. (Сообщений пока нет.)</li>
+{% endfor %}
+{% endblock content %}
