@@ -6,6 +6,8 @@ from . models import Message
 from django.contrib.auth.decorators import login_required
 from . forms import MessageForm
 # from django.http import Http404
+from django.core.paginator import Paginator
+
 
 # My additional functions.
 
@@ -18,53 +20,62 @@ from . forms import MessageForm
 
 @login_required
 def index(request):
-	"""The home page for letter_app."""
-	return render(request, 'letter_app/index.html')
+    """The home page for letter_app."""
+    return render(request, 'letter_app/index.html')
 
 @login_required
 def messages(request):
-	"""The message page for letter_app. For all messages."""
-	messages = Message.objects.order_by('-date_added')
-	request_user = request.user
-	messages_number = len(messages)
-	context = {'messages': messages, 'request_user': request_user, 'messages_number': messages_number}
-	return render(request, 'letter_app/messages.html', context)
+    """The message page for letter_app. For all messages."""
+    messages = Message.objects.order_by('-date_added')
+    request_user = request.user
+    messages_number = len(messages)
+    context = {'messages': messages, 'request_user': request_user, 'messages_number': messages_number}
+    return render(request, 'letter_app/messages.html', context)
 
 @login_required
 def input_messages(request):
-	"""The input messages page."""
-	input_message = Message.objects.exclude(owner=request.user).order_by('-date_added')
-	input_number = len(input_message)
-	context = {"input_message": input_message, "input_number": input_number}
-	return render(request, 'letter_app/inputmessages.html', context)
+    """The input messages page."""
+    input_message = Message.objects.exclude(owner=request.user).order_by('-date_added')
+    input_number = len(input_message)
+    context = {"input_message": input_message, "input_number": input_number}
+    return render(request, 'letter_app/inputmessages.html', context)
 
 @login_required
 def output_messages(request):
-	"""The input messages page."""
-	output_messages = Message.objects.filter(owner=request.user).order_by('-date_added')
-	output_number = len(output_messages)
-	context = {'output_messages': output_messages, "output_number": output_number}
-	return render(request, 'letter_app/outputmessages.html', context)
+    """The input messages page."""
+
+    # object for all output messages
+    output_messages = Message.objects.filter(owner=request.user).order_by('-date_added')
+    # number for all output messages
+    output_number = len(output_messages)
+
+    # Pagination for output message object
+    paginator = Paginator(output_messages, 2)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    context = {'output_messages': output_messages, "output_number": output_number, "page_obj": page_obj }
+    return render(request, 'letter_app/outputmessages.html', context)
 
 @login_required
 def write_message(request):
-	"""Write a message."""
+    """Write a message."""
 
-	if request.method != 'POST':
-		# No data submitted; create a blank form.
-		form = MessageForm()
-	else:
-		# POST data submitted: process data.
-		form = MessageForm(data=request.POST)
-		if form.is_valid():
-			message = form.save(commit=False)
-			message.owner = request.user
-			message.save()
-			return redirect('letter_app:output_messages')
+    if request.method != 'POST':
+        # No data submitted; create a blank form.
+        form = MessageForm()
+    else:
+        # POST data submitted: process data.
+        form = MessageForm(data=request.POST)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.owner = request.user
+            message.save()
+            return redirect('letter_app:output_messages')
 
-	# Display a blank or invalid form.
-	context = {"form": form}
-	return render(request, 'letter_app/write_message.html', context)
+    # Display a blank or invalid form.
+    context = {"form": form}
+    return render(request, 'letter_app/write_message.html', context)
 
 # def new_entry(request, topic_id):
 #     """Add a new entry for a particular topic."""
@@ -89,7 +100,7 @@ def write_message(request):
 #     return render(request, 'learning_logs/new_entry.html', context)
 
 # def index(request):
-# 	"""The home page for letter_app."""
-# 	messages = Message.objects.order_by('-date_added')
-# 	context = {'messages': messages}
-# 	return render(request, 'letter_app/index.html', context)
+#   """The home page for letter_app."""
+#   messages = Message.objects.order_by('-date_added')
+#   context = {'messages': messages}
+#   return render(request, 'letter_app/index.html', context)

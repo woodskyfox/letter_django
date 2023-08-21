@@ -23,38 +23,38 @@
 
 		      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 		        <li class="nav-item">
-		          <a class="nav-link active" aria-current="page" href="{% url 'letter_app:index' %}">main</a>
+		          <a class="nav-link active" aria-current="page" href="{% url 'letter_app:index' %}">Главная</a>
 		        </li>
 		        <li class="nav-item">
 		          <a class="nav-link active" aria-current="page" href="{% url 'letter_app:write_message' %}">
-		             write
+		             Написать
 		          </a>
 		        </li>
+		        <!-- <li class="nav-item">
+		          <a class="nav-link active" href="{% url 'letter_app:messages' %}">Все</a>
+		        </li> -->
 		        <li class="nav-item">
-		          <a class="nav-link" href="{% url 'letter_app:messages' %}">messages</a>
+		          <a class="nav-link active" href="{% url 'letter_app:input_messages' %}">Входящие</a>
 		        </li>
 		        <li class="nav-item">
-		          <a class="nav-link" href="{% url 'letter_app:input_messages' %}">input</a>
-		        </li>
-		        <li class="nav-item">
-		          <a class="nav-link" href="{% url 'letter_app:output_messages' %}">output</a>
+		          <a class="nav-link active" href="{% url 'letter_app:output_messages' %}">Отправленные</a>
 		        </li>
 		      </ul>
 
 		      <ul class="navbar-nav ml-auto">
 		        {% if user.is_authenticated %}
 		          <li class="nav-item">
-		            <a class="nav-link" href="">Hello, {{ user.username }}.</a>
+		            <a class="nav-link" href="">Привет, {{ user.username }}.</a>
 		          </li>
 		          <li class="nav-item">
-		            <a class="nav-link" href="{% url 'accounts:logout' %}">Log out</a>
+		            <a class="nav-link active" href="{% url 'accounts:logout' %}">Выйти</a>
 		          </li>
 		        {% else %}
 	              <li class="nav-item">
-		            <a class="nav-link" href="{% url 'accounts:register' %}">Register</a>
+		            <a class="nav-link" href="{% url 'accounts:register' %}">Регистрация</a>
 		          </li>
 		          <li class="nav-item">
-		            <a class="nav-link" href="{% url 'accounts:login' %}">Log in</a></li>
+		            <a class="nav-link active" href="{% url 'accounts:login' %}">Войти</a></li>
 		        {% endif %}
 		     </ul>
 
@@ -68,9 +68,14 @@
 		<div>
 			{% block page_header %}{% endblock page_header %}
 		</div>
+
+        <div class="">
+			{% block pagenation %}{% endblock pagenation %}
+		</div>
+
 		<div class="">
 			{% block content %}{% endblock content %}
-		</div>
+		</div>	
 	</main>
 
   </body>
