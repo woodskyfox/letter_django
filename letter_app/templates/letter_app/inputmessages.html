@@ -2,13 +2,50 @@
 
 {% block page_header %}
   <h3>Входящие ({{input_number}})</h3>
-{% endblock page_header %}
-
-{% block content %}
   <p>
     <a href="{% url 'letter_app:input_messages' %}">Обновить</a>
   </p>
-{% for input_message in input_message %}
+{% endblock page_header %}
+
+{% block pagenation %}
+<div class="nav justify-content-center">
+	<p>стр. {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</p>
+</div>
+
+<nav aria-label="Page navigation example" class="nav justify-content-center">
+  <ul class="pagination">
+  	{% if page_obj.has_previous %}
+    <li class="page-item"><a class="page-link" href="?page=1">1</a></li>
+    <li class="page-item"><a class="page-link" href="#">...</a></li>
+    <li class="page-item">
+    	<a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+    	   {{ page_obj.previous_page_number }}
+    	</a>
+    </li>
+    {% endif %}
+    
+    <li class="page-item active">
+    	<a class="page-link" href="?page={{ page_obj.number }}">
+    		{{ page_obj.number }}
+    		<!-- из {{ page_obj.paginator.num_pages }} -->
+    	</a>
+    </li>
+
+    {% if page_obj.has_next %}
+    <li class="page-item">
+    	<a class="page-link" href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+    </li>
+    <li class="page-item"><a class="page-link" href="#">...</a></li>
+    <li class="page-item">
+    	<a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>
+{% endblock pagenation %}
+
+{% block content %}
+{% for input_message in page_obj %}
 <div class="card mb-3 text-bg-light">
    <div class="card-header">
       <!-- {{input_message.id}} -->

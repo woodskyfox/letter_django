@@ -35,9 +35,18 @@ def messages(request):
 @login_required
 def input_messages(request):
     """The input messages page."""
+
+    # object for all input messages
     input_message = Message.objects.exclude(owner=request.user).order_by('-date_added')
+    # number for all output messages
     input_number = len(input_message)
-    context = {"input_message": input_message, "input_number": input_number}
+
+    # Pagination for output message object
+    paginator = Paginator(input_message, 5)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    context = {"input_number": input_number, "page_obj": page_obj }
     return render(request, 'letter_app/inputmessages.html', context)
 
 @login_required
@@ -50,11 +59,11 @@ def output_messages(request):
     output_number = len(output_messages)
 
     # Pagination for output message object
-    paginator = Paginator(output_messages, 2)
+    paginator = Paginator(output_messages, 5)
     page_number = request.GET.get("page")
     page_obj = paginator.get_page(page_number)
 
-    context = {'output_messages': output_messages, "output_number": output_number, "page_obj": page_obj }
+    context = {"output_number": output_number, "page_obj": page_obj }
     return render(request, 'letter_app/outputmessages.html', context)
 
 @login_required
